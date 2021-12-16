@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const mysql = require('mysql2')
+const mysql = require('mysql2');
+const cTable = require('console.table');
 
 // Create connection to mysql
 const db = mysql.createConnection(
@@ -21,6 +22,13 @@ const viewDepartments = () => {
 
 const viewRoles = () => {
     db.query('SELECT * FROM roles', function(err, results) {
+        console.table(results);
+        startPrompt();
+    });
+}
+
+const viewEmployees = () => {
+    db.query('SELECT * FROM employee', function(err, results) {
         console.table(results);
         startPrompt();
     });
@@ -52,7 +60,7 @@ const startPrompt = () => {
                 console.log("Viewing Roles");
             break;
             case "View all employees":
-                // viewEmployees()
+                viewEmployees()
                 console.log("Viewing Employees")
             break;
             case "Add a role":
