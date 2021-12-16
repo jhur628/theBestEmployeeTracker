@@ -1,5 +1,11 @@
 const inquirer = require('inquirer');
+const mysql = require('mysql2')
 
+const viewDepartments = () => {
+    inquirer.prompt([
+        
+    ])
+}
 
 const startPrompt = () => {
     inquirer.prompt([
@@ -19,7 +25,7 @@ const startPrompt = () => {
     .then(data => {
         switch (data.choice) {
             case "View all departments":
-                // viewDepartments()
+                viewDepartments()
                 console.log("Viewing Departments");
             break;
             case "View all roles":
