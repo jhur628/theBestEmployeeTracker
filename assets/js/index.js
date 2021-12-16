@@ -1,10 +1,22 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2')
 
+// Create connection to mysql
+const db = mysql.createConnection(
+    {
+        host: "localhost",
+        user: "root",
+        password: "Password1",
+        database: "employee_db"
+    },
+    console.log("CONNECTED!")
+)
+
 const viewDepartments = () => {
-    inquirer.prompt([
-        
-    ])
+    db.query('SELECT * FROM department', function(err, results) {
+        console.table(results);
+        startPrompt();
+    });
 }
 
 const startPrompt = () => {
