@@ -19,6 +19,13 @@ const viewDepartments = () => {
     });
 }
 
+const viewRoles = () => {
+    db.query('SELECT * FROM roles', function(err, results) {
+        console.table(results);
+        startPrompt();
+    });
+}
+
 const startPrompt = () => {
     inquirer.prompt([
         {
@@ -41,7 +48,7 @@ const startPrompt = () => {
                 console.log("Viewing Departments");
             break;
             case "View all roles":
-                // viewRoles()
+                viewRoles()
                 console.log("Viewing Roles");
             break;
             case "View all employees":
