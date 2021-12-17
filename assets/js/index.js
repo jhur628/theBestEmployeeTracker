@@ -16,12 +16,13 @@ const db = mysql.createConnection(
 
 let roleChoices = [];
 const role = () => {
-    db.query('SELECT title FROM roles', function(err, results) {
-        results.forEach((job) => {
+    db.query('SELECT title FROM roles', function(err, res) {
+        if (err) throw err
+        res.forEach((job) => {
             roleChoices.push(job.title)
         })
-        return roleChoices;
     })
+    return roleChoices;
 }
 
 const viewDepartments = () => {
@@ -46,7 +47,7 @@ const viewEmployees = () => {
 }
 
 const updateRole = () => {
-    db.query('SELECT first_name FROM employee JOIN roles ON employee.roles_id = roles.id', function(err, results) {
+    db.query('SELECT first_name FROM employee', function(err, results) {
         let peopleChoices = [];
         const name = () => {
             results.forEach((person) => {
@@ -54,7 +55,7 @@ const updateRole = () => {
             })
             return peopleChoices;
         }
-        console.log(name)
+        
         inquirer.prompt([
             {
                 name: "nameChoice",
@@ -77,7 +78,6 @@ const updateRole = () => {
 };
 
 const startPrompt = () => {
-    role();
     inquirer.prompt([
         {
             type: "list",
