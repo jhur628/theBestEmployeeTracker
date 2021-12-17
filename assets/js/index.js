@@ -16,14 +16,35 @@ const db = mysql.createConnection(
 
 let roleChoices = [];
 const role = () => {
-    db.query('SELECT title FROM roles', function(err, res) {
+    db.query('SELECT id FROM roles', function(err, res) {
         if (err) throw err
         res.forEach((job) => {
-            roleChoices.push(job.title)
+            roleChoices.push(job.id)
         })
     })
     return roleChoices;
 }
+
+let roleIdChoices = [];
+const roleId = () => {
+    db.query('SELECT id, title FROM roles', function(err, res) {
+        if (err) throw err
+        res.forEach((job) => {
+            roleIdChoices.push(job.title)
+        })
+    })
+    return roleIdChoices;
+}
+// let rTable = [];
+// const rolesTable = () => {
+//     db.query('SELECT id FROM roles', function(err, res) {
+//         if (err) throw err
+//         res.forEach((items) => {
+//             rTable.push(items.id);
+//         })
+//     })
+//     return rTable;
+// }
 
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, results) {
@@ -47,6 +68,9 @@ const viewEmployees = () => {
 }
 
 const updateRole = () => {
+    db.query('SELECT * FROM roles', function(err, results) {
+        console.table(results);
+    })
     db.query('SELECT first_name FROM employee', function(err, results) {
         let peopleChoices = [];
         const name = () => {
@@ -55,7 +79,6 @@ const updateRole = () => {
             })
             return peopleChoices;
         }
-        
         inquirer.prompt([
             {
                 name: "nameChoice",
@@ -66,18 +89,19 @@ const updateRole = () => {
             {
                 name: "roleChoice",
                 type: "list",
-                message: "What role do you want to change the person into?",
+                message: `What role do you want to change the person into?`,
                 choices: role()
             }
         ])
         .then(data => {
-            db.query(`UPDATE employee JOIN roles ON employee.roles_id = roles.id SET title = "${data.nameChoice}" WHERE first_name = "${data.roleChoice}"`, function(err, results) {
+            db.query(`UPDATE employee SET roles_id = ${data.roleChoice} WHERE first_name = "${data.nameChoice}"`, function(err, results) {
                 if (err) throw err;
-                console.log(`${data.nameChoice}'s role has been changed to ${data.roleChoice}!`);
+                console.log(`${data.nameChoice}'s role id has been changed to ${data.roleChoice}!`);
                 db.query(`SELECT * FROM employee JOIN roles ON employee.roles_id = roles.id`, function(err, results) {
                     console.table(results);
                 })
             })
+            startPrompt();
         })
     })
 };
