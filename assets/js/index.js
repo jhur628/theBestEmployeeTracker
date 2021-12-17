@@ -14,6 +14,16 @@ const db = mysql.createConnection(
     console.log("CONNECTED!")
 )
 
+let roleChoices = [];
+const role = () => {
+    db.query('SELECT title FROM roles', function(err, results) {
+        results.forEach((job) => {
+            roleChoices.push(job.title)
+        })
+        return roleChoices;
+    })
+}
+
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, results) {
         console.table(results);
@@ -47,19 +57,27 @@ const updateRole = () => {
         console.log(name)
         inquirer.prompt([
             {
-                name: "changeChoice",
+                name: "nameChoice",
                 type: "list",
                 message: "Who's role do you want to update?",
                 choices: name()
+            },
+            {
+                name: "roleChoice",
+                type: "list",
+                message: "What role do you want to change the person into?",
+                choices: role()
             }
         ])
         .then(data => {
-            console.log(data.changeChoice)
+            console.log(data.nameChoice)
+            console.log(data.roleChoice)
         })
     })
 };
 
 const startPrompt = () => {
+    role();
     inquirer.prompt([
         {
             type: "list",
