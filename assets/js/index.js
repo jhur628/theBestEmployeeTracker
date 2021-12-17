@@ -37,15 +37,20 @@ const viewEmployees = () => {
 
 const updateRole = () => {
     db.query('SELECT first_name FROM employee JOIN roles ON employee.roles_id = roles.id', function(err, results) {
-        console.log(results);
-        let name = JSON.parse(results.first_name);
+        let peopleChoices = [];
+        const name = () => {
+            results.forEach((person) => {
+                peopleChoices.push(person.first_name)
+            })
+            return peopleChoices;
+        }
         console.log(name)
         inquirer.prompt([
             {
-                name: "roleChoice",
+                name: "changeChoice",
                 type: "list",
                 message: "Who's role do you want to update?",
-                choices: name
+                choices: name()
             }
         ])
         .then(data => {
