@@ -54,7 +54,7 @@ const updateRole = () => {
             }
         ])
         .then(data => {
-            console.log(data)
+            console.log(data.changeChoice)
         })
     })
 };
