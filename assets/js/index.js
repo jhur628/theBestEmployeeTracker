@@ -71,8 +71,13 @@ const updateRole = () => {
             }
         ])
         .then(data => {
-            console.log(data.nameChoice)
-            console.log(data.roleChoice)
+            db.query(`UPDATE employee JOIN roles ON employee.roles_id = roles.id SET title = "${data.nameChoice}" WHERE first_name = "${data.roleChoice}"`, function(err, results) {
+                if (err) throw err;
+                console.log(`${data.nameChoice}'s role has been changed to ${data.roleChoice}!`);
+                db.query(`SELECT * FROM employee JOIN roles ON employee.roles_id = roles.id`, function(err, results) {
+                    console.table(results);
+                })
+            })
         })
     })
 };
