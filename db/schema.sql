@@ -43,3 +43,5 @@ SELECT *
 FROM course_names
 RIGHT JOIN department ON course_names.department = department.id;
 -- return where there is overlap in both tables AND all the departments
+
+update employee join roles on employee.roles_id = roles.id set title = "Salesperson" where first_name = "john"
