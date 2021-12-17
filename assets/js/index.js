@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
+const res = require('express/lib/response');
 
 // Create connection to mysql
 const db = mysql.createConnection(
@@ -34,6 +35,25 @@ const viewEmployees = () => {
     });
 }
 
+const updateRole = () => {
+    db.query('SELECT first_name FROM employee JOIN roles ON employee.roles_id = roles.id', function(err, results) {
+        console.log(results);
+        let name = JSON.parse(results.first_name);
+        console.log(name)
+        inquirer.prompt([
+            {
+                name: "roleChoice",
+                type: "list",
+                message: "Who's role do you want to update?",
+                choices: name
+            }
+        ])
+        .then(data => {
+            console.log(data)
+        })
+    })
+};
+
 const startPrompt = () => {
     inquirer.prompt([
         {
@@ -43,6 +63,7 @@ const startPrompt = () => {
                 "View all departments",
                 "View all roles",
                 "View all employees",
+                "Add a department",
                 "Add a role",
                 "Add a employee",
                 "Update an employee role"
@@ -52,28 +73,31 @@ const startPrompt = () => {
     .then(data => {
         switch (data.choice) {
             case "View all departments":
-                viewDepartments()
                 console.log("Viewing Departments");
+                viewDepartments()
             break;
             case "View all roles":
-                viewRoles()
                 console.log("Viewing Roles");
+                viewRoles()
             break;
             case "View all employees":
-                viewEmployees()
                 console.log("Viewing Employees")
+                viewEmployees()
             break;
+            case "Add a department":
+                console.log("Adding Department")
+                // addDepartment()
             case "Add a role":
-                // addRole()
                 console.log("Adding Role")
+                // addRole()
             break;
             case "Add a employee":
-                // addEmployee()
                 console.log("Adding Employee")
+                // addEmployee()
             break;
             case "Update an employee role":
-                // updateRole()
                 console.log("Updating employee role")
+                updateRole()
             break;
         }
     })
