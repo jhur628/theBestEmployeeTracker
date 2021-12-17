@@ -81,6 +81,13 @@ const addDepartment = () => {
             }
         }
     ])
+    .then(data => {
+        db.query(`INSERT INTO department (name) VALUE (?)`, data.addedDepartment, function(err, res) {
+            if (err) throw err
+            console.log(`${data.addedDepartment} was added!`)
+        })
+        startPrompt();
+    })
 }
 
 const updateRole = () => {
