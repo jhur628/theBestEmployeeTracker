@@ -67,6 +67,22 @@ const viewEmployees = () => {
     });
 }
 
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            name: "addedDepartment",
+            type: "input",
+            message: "What department would you like to add?",
+            validate: (data) => {
+                if (data === '') {
+                    return `Please enter a department to add.`
+                }
+                return true
+            }
+        }
+    ])
+}
+
 const updateRole = () => {
     db.query('SELECT * FROM roles', function(err, results) {
         console.table(results);
@@ -138,7 +154,7 @@ const startPrompt = () => {
             break;
             case "Add a department":
                 console.log("Adding Department")
-                // addDepartment()
+                addDepartment()
             case "Add a role":
                 console.log("Adding Role")
                 // addRole()
