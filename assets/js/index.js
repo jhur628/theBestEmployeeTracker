@@ -16,10 +16,10 @@ const db = mysql.createConnection(
 
 let roleChoices = [];
 const role = () => {
-    db.query('SELECT id FROM roles', function(err, res) {
+    db.query('SELECT title FROM roles', function(err, res) {
         if (err) throw err
         res.forEach((job) => {
-            roleChoices.push(job.id)
+            roleChoices.push(job.title)
         })
     })
     return roleChoices;
@@ -122,9 +122,6 @@ const addRole = () => {
 }
 
 const updateRole = () => {
-    db.query('SELECT * FROM roles', function(err, results) {
-        console.table(results);
-    })
     db.query('SELECT first_name FROM employee', function(err, results) {
         let peopleChoices = [];
         const name = () => {
@@ -148,7 +145,8 @@ const updateRole = () => {
             }
         ])
         .then(data => {
-            db.query(`UPDATE employee SET roles_id = ${data.roleChoice} WHERE first_name = "${data.nameChoice}"`, function(err, results) {
+            let titleId = role().indexOf(data.roleChoice) + 1
+            db.query(`UPDATE employee SET roles_id = ${titleId} WHERE first_name = "${data.nameChoice}"`, function(err, results) {
                 if (err) throw err;
                 console.log(`${data.nameChoice}'s role id has been changed to ${data.roleChoice}!`);
                 db.query(`SELECT * FROM employee JOIN roles ON employee.roles_id = roles.id`, function(err, results) {
