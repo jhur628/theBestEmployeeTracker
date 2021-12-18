@@ -1,7 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
-const res = require('express/lib/response');
 
 // Create connection to mysql
 const db = mysql.createConnection(
@@ -34,17 +33,6 @@ const department = () => {
         })
     })
     return departmentChoices;
-}
-
-let managerChoices = [];
-const manager = () => {
-    db.query('SELECT first_name FROM employee WHERE manager_id IS NULL', function(err, res) {
-        if (err) throw err
-        res.forEach((mang) => {
-            managerChoices.push(mang.first_name)
-        })
-    })
-    return managerChoices;
 }
 
 let employeeChoices = [];
