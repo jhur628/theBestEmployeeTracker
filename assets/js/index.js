@@ -25,17 +25,6 @@ const role = () => {
     return roleChoices;
 }
 
-let roleIdChoices = [];
-const roleId = () => {
-    db.query('SELECT id, title FROM roles', function(err, res) {
-        if (err) throw err
-        res.forEach((job) => {
-            roleIdChoices.push(job.title)
-        })
-    })
-    return roleIdChoices;
-}
-
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, results) {
         console.table(results);
