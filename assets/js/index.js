@@ -36,22 +36,44 @@ const department = () => {
     return departmentChoices;
 }
 
+let managerChoices = [];
+const manager = () => {
+    db.query('SELECT first_name FROM employee WHERE manager_id IS NULL', function(err, res) {
+        if (err) throw err
+        res.forEach((mang) => {
+            managerChoices.push(mang.first_name)
+        })
+    })
+    return managerChoices;
+}
+
+let employeeChoices = [];
+const employee = () => {
+    db.query('SELECT first_name FROM employee', function(err, res) {
+        if (err) throw err
+        res.forEach((emp) => {
+            employeeChoices.push(emp.first_name)
+        })
+    })
+    return employeeChoices;
+}
+
 const viewDepartments = () => {
-    db.query('SELECT * FROM department', function(err, results) {
+    db.query('SELECT * FROM department ORDER BY id ASC', function(err, results) {
         console.table(results);
         startPrompt();
     });
 }
 
 const viewRoles = () => {
-    db.query('SELECT roles.id, title, salary, department.name FROM roles JOIN department ON roles.department_id = department.id', function(err, results) {
+    db.query('SELECT roles.id, title, salary, department.name FROM roles JOIN department ON roles.department_id = department.id ORDER BY roles.id ASC', function(err, results) {
         console.table(results);
         startPrompt();
     });
 }
 
 const viewEmployees = () => {
-    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name AS department FROM employee JOIN roles ON employee.roles_id = roles.id JOIN department ON roles.department_id = department.id', function(err, results) {
+    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name AS department FROM employee JOIN roles ON employee.roles_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employee.id ASC', function(err, results) {
         console.table(results);
         startPrompt();
     });
@@ -121,6 +143,55 @@ const addRole = () => {
     })
 }
 
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            name: "firstName",
+            type: "input",
+            message: "What is the new employee's first name?",
+            validate: (data) => {
+                if (data === '') {
+                    return `Please enter a first name to add.`
+                }
+                return true
+            }
+        },
+        {
+            name: "lastName",
+            type: "input",
+            message: "What is the new employee's last name?",
+            validate: (data) => {
+                if (data === '') {
+                    return `Please enter a last name to add.`
+                }
+                return true
+            }
+        },
+        {
+            
+            name: "manager",
+            type: "list",
+            message: "Who will be the new employee's manager?",
+            choices: employee()
+        },
+        {
+            name: "role",
+            type: "list",
+            message: "What is the new employee's title?",
+            choices: role()
+        }
+    ])
+    .then(data => {
+        let managerId = employee().indexOf(data.manager) + 1;
+        let roleId = role().indexOf(data.role) + 1;
+        db.query(`INSERT INTO employee (first_name, last_name, manager_id, roles_id) VALUES ("${data.firstName}", "${data.lastName}", ${managerId}, ${roleId})`, function(err, res) {
+            if (err) throw err
+            console.log(`${data.firstName} ${data.lastName} was added as an employee!`)
+        })
+        startPrompt()
+    })
+}
+
 const updateRole = () => {
     db.query('SELECT first_name FROM employee', function(err, results) {
         let peopleChoices = [];
@@ -149,9 +220,6 @@ const updateRole = () => {
             db.query(`UPDATE employee SET roles_id = ${titleId} WHERE first_name = "${data.nameChoice}"`, function(err, results) {
                 if (err) throw err;
                 console.log(`${data.nameChoice}'s role id has been changed to ${data.roleChoice}!`);
-                db.query(`SELECT * FROM employee JOIN roles ON employee.roles_id = roles.id`, function(err, results) {
-                    console.table(results);
-                })
             })
             startPrompt();
         })
@@ -169,7 +237,7 @@ const startPrompt = () => {
                 "View all employees",
                 "Add a department",
                 "Add a role",
-                "Add a employee",
+                "Add an employee",
                 "Update an employee role"
             ]
         }
@@ -195,9 +263,9 @@ const startPrompt = () => {
                 console.log("Adding Role")
                 addRole()
             break;
-            case "Add a employee":
+            case "Add an employee":
                 console.log("Adding Employee")
-                // addEmployee()
+                addEmployee()
             break;
             case "Update an employee role":
                 console.log("Updating employee role")
