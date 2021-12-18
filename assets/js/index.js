@@ -51,7 +51,7 @@ const viewRoles = () => {
 }
 
 const viewEmployees = () => {
-    db.query('SELECT * FROM employee', function(err, results) {
+    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name AS department FROM employee JOIN roles ON employee.roles_id = roles.id JOIN department ON roles.department_id = department.id', function(err, results) {
         console.table(results);
         startPrompt();
     });
