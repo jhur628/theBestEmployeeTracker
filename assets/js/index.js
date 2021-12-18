@@ -25,6 +25,17 @@ const role = () => {
     return roleChoices;
 }
 
+let departmentChoices = [];
+const department = () => {
+    db.query('SELECT name FROM department', function(err, res) {
+        if (err) throw err
+        res.forEach((dept) => {
+            departmentChoices.push(dept.name)
+        })
+    })
+    return departmentChoices;
+}
+
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, results) {
         console.table(results);
@@ -64,6 +75,47 @@ const addDepartment = () => {
         db.query(`INSERT INTO department (name) VALUE (?)`, data.addedDepartment, function(err, res) {
             if (err) throw err
             console.log(`${data.addedDepartment} was added!`)
+        })
+        startPrompt();
+    })
+}
+
+const addRole = () => {
+    inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "What is the title of the new role?",
+            validate: (data) => {
+                if (data === '') {
+                    return `Please enter a title to add.`
+                }
+                return true
+            }
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "What is the new role's salary?",
+            validate: (data) => {
+                if (isNaN(data)){
+                    return `Please enter a salary amount.`
+                }
+                return true
+            }
+        },
+        {
+            name: "department",
+            type: "list",
+            message: "What department does the new role belong to?",
+            choices: department()
+        }
+    ])
+    .then(data => {
+        let deptId = department().indexOf(data.department) + 1;
+        db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${deptId})`, function(err, results){
+            if (err) throw err
+            console.log(`${data.title} was created!`)
         })
         startPrompt();
     })
@@ -143,7 +195,7 @@ const startPrompt = () => {
                 addDepartment()
             case "Add a role":
                 console.log("Adding Role")
-                // addRole()
+                addRole()
             break;
             case "Add a employee":
                 console.log("Adding Employee")
