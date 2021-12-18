@@ -35,16 +35,6 @@ const roleId = () => {
     })
     return roleIdChoices;
 }
-// let rTable = [];
-// const rolesTable = () => {
-//     db.query('SELECT id FROM roles', function(err, res) {
-//         if (err) throw err
-//         res.forEach((items) => {
-//             rTable.push(items.id);
-//         })
-//     })
-//     return rTable;
-// }
 
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, results) {
@@ -54,7 +44,7 @@ const viewDepartments = () => {
 }
 
 const viewRoles = () => {
-    db.query('SELECT * FROM roles', function(err, results) {
+    db.query('SELECT roles.id, title, salary, department.name FROM roles JOIN department ON roles.department_id = department.id', function(err, results) {
         console.table(results);
         startPrompt();
     });

@@ -13,7 +13,7 @@ VALUE ("HR Specialist", 55000, 1),
 ("Salesperson", 55000, 5);
 
 INSERT INTO employee (first_name, last_name, manager_id, roles_id)
-VALUE ("John", "Hur", 1, 2),
+VALUE ("John", "Hur", null, 2),
 ("Sam", "Page", 1, 1),
 ("Kendall", "Swanson", 1, 2),
 ("Aidan", "Bachtell", 1, 3),
