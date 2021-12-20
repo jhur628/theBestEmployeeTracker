@@ -1,6 +1,10 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
+const logo = require('asciiart-logo');
+const config = require('./package.json');
+
+console.log(logo(config).render());
 
 // Create connection to mysql
 const db = mysql.createConnection(
@@ -37,10 +41,10 @@ const department = () => {
 
 let employeeChoices = [];
 const employee = () => {
-    db.query('SELECT first_name FROM employee', function(err, res) {
+    db.query('SELECT first_name, last_name FROM employee', function(err, res) {
         if (err) throw err
         res.forEach((emp) => {
-            employeeChoices.push(emp.first_name)
+            employeeChoices.push(emp.first_name.concat(" ", emp.last_name))
         })
     })
     return employeeChoices;
@@ -61,7 +65,7 @@ const viewRoles = () => {
 }
 
 const viewEmployees = () => {
-    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name AS department FROM employee JOIN roles ON employee.roles_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employee.id ASC', function(err, results) {
+    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, roles.salary, department.name AS department, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employee INNER JOIN roles ON employee.roles_id = roles.id INNER JOIN department ON roles.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id ORDER BY employee.id ASC', function(err, results) {
         console.table(results);
         startPrompt();
     });
@@ -226,7 +230,8 @@ const startPrompt = () => {
                 "Add a department",
                 "Add a role",
                 "Add an employee",
-                "Update an employee role"
+                "Update an employee role",
+                "Exit"
             ]
         }
     ])
@@ -247,6 +252,7 @@ const startPrompt = () => {
             case "Add a department":
                 console.log("Adding Department")
                 addDepartment()
+            break;
             case "Add a role":
                 console.log("Adding Role")
                 addRole()
@@ -259,8 +265,14 @@ const startPrompt = () => {
                 console.log("Updating employee role")
                 updateRole()
             break;
+            case "Exit":
+                console.log("Bye!")
+                process.exit()
+            break;
         }
     })
 }
+
+startPrompt();
 
 module.exports = startPrompt;

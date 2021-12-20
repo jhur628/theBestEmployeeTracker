@@ -26,23 +26,3 @@ CREATE TABLE employee (
   FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
-
-
-SELECT *
-FROM employee
-INNER JOIN roles ON employee.roles_id = roles.id 
-INNER JOIN department ON roles.department_id = department.id;
--- return where there is overlap in both tables
-
-SELECT *
-FROM course_names
-LEFT JOIN department ON course_names.department = department.id;
--- return where there is overlap in both tables AND all the course_names
-
-SELECT *
-FROM course_names
-RIGHT JOIN department ON course_names.department = department.id;
--- return where there is overlap in both tables AND all the departments
-
-update employee join roles on employee.roles_id = roles.id 
-set title = "Salesperson" where first_name = "john"
