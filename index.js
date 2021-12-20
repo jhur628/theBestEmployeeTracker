@@ -58,7 +58,7 @@ const viewDepartments = () => {
 }
 
 const viewRoles = () => {
-    db.query('SELECT roles.id, title, salary, department.name FROM roles JOIN department ON roles.department_id = department.id ORDER BY roles.id ASC', function(err, results) {
+    db.query('SELECT roles.id, title, salary, department.name AS department FROM roles JOIN department ON roles.department_id = department.id ORDER BY roles.id ASC', function(err, results) {
         console.table(results);
         startPrompt();
     });
